@@ -15,7 +15,7 @@
         "league/commonmark": "^2.7"
     },
     "require-dev": {
-        "orchestra/testbench": "^11.5",
+        "orchestra/testbench": "^11.0",
         "phpunit/phpunit": "^11.5.50||^12.5.8"
     },
     "autoload": {

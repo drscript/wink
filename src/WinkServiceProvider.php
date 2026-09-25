@@ -35,26 +35,40 @@ class WinkServiceProvider extends ServiceProvider
     {
         $middlewareGroup = config('wink.middleware_group');
 
-        Route::middleware($middlewareGroup)
-            ->as('wink.')
-            ->domain(config('wink.domain'))
-            ->prefix(config('wink.path'))
-            ->group(function () {
-                Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
-                Route::post('/login', [LoginController::class, 'login'])->name('auth.attempt');
+        $this->routeGroup($middlewareGroup)->group(function () {
+            Route::get('/login', [LoginController::class, 'showLoginForm'])->name('auth.login');
+            Route::post('/login', [LoginController::class, 'login'])->name('auth.attempt');
 
-                Route::get('/password/forgot', [ForgotPasswordController::class, 'showResetRequestForm'])->name('password.forgot');
-                Route::post('/password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-                Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showNewPassword'])->name('password.reset');
-            });
+            Route::get('/password/forgot', [ForgotPasswordController::class, 'showResetRequestForm'])->name('password.forgot');
+            Route::post('/password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+            Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showNewPassword'])->name('password.reset');
+        });
 
-        Route::middleware([$middlewareGroup, Authenticate::class])
+        $this->routeGroup([$middlewareGroup, Authenticate::class])->group(function () {
+            $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
+        });
+    }
+
+    /**
+     * Start a Wink route group.
+     *
+     * An empty domain is omitted so routes stay host-agnostic. Laravel 13
+     * prioritizes routes that declare a domain during matching.
+     *
+     * @param  string|array  $middleware
+     * @return \Illuminate\Routing\RouteRegistrar
+     */
+    private function routeGroup($middleware)
+    {
+        $routes = Route::middleware($middleware)
             ->as('wink.')
-            ->domain(config('wink.domain'))
-            ->prefix(config('wink.path'))
-            ->group(function () {
-                $this->loadRoutesFrom(__DIR__.'/Http/routes.php');
-            });
+            ->prefix(config('wink.path'));
+
+        if ($domain = config('wink.domain')) {
+            $routes->domain($domain);
+        }
+
+        return $routes;
     }
 
     /**

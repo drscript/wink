@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Wink\Http\Controllers\ImageUploadsController;
 use Wink\Http\Controllers\LoginController;
 use Wink\Http\Controllers\PagesController;

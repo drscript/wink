@@ -111,7 +111,7 @@ class WinkPost extends AbstractWinkModel
             'allow_unsafe_links' => false,
         ]);
 
-        return new HtmlString($converter->convertToHtml($this->body));
+        return new HtmlString((string) $converter->convert((string) $this->body));
     }
 
     /**

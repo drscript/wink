@@ -10,12 +10,22 @@
         }
     ],
     "require": {
-        "php": "^7.3||^7.4||^8.0",
-        "laravel/framework": "^7.0||^8.0||^9.0|^10.0"
+        "php": "^8.3",
+        "laravel/framework": "^11.0||^12.0||^13.0",
+        "league/commonmark": "^2.7"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^11.5.50||^12.5.8"
     },
     "autoload": {
         "psr-4": {
             "Wink\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wink\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -27,6 +37,9 @@
                 "Wink\\WinkServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "config": {
         "sort-packages": true

@@ -8,14 +8,28 @@ Wink is used to manage the [official Laravel blog](https://blog.laravel.com), [d
 
 Dark & Light modes available so everyone is happy 😁
 
+## Requirements
+
+- PHP 8.3, 8.4, or 8.5
+- Laravel 11, 12, or 13
+
 ## Installation
 
 Wink uses a separate database connection and authentication system so that you don't have to modify any of your project code.
 
-To install Wink, run these commands in the root of your Laravel app:
+Packagist `themsaid/wink` stops at Laravel 10. Install this fork from GitHub:
+
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/drscript/wink"
+    }
+]
+```
 
 ```sh
-composer require themsaid/wink
+composer require themsaid/wink:dev-1.x
 php artisan wink:install
 php artisan storage:link
 ```
@@ -27,6 +41,8 @@ php artisan wink:migrate
 ```
 
 Head to `yourproject.test/wink` and use the provided email and password to log in.
+
+Uploaded images use the `public` disk and are stored in `storage/app/public/wink/images`. `storage:link` serves that directory. On Laravel 11 and newer the `local` disk points at `storage/app/private`, so leave `storage_disk` set to `public` unless you intend to use a private or S3 disk.
 
 ## Uploading to S3
 

@@ -24,11 +24,15 @@ return [
     | any of the disks defined in your config/filesystems.php file. You may
     | also configure the path where the files should be stored.
     |
+    | The public disk keeps uploads under storage/app/public so that
+    | `php artisan storage:link` can serve them. Laravel 11 and newer point
+    | the local disk at storage/app/private, which is not web-accessible.
+    |
     */
 
-    'storage_disk' => env('WINK_STORAGE_DISK', 'local'),
+    'storage_disk' => env('WINK_STORAGE_DISK', 'public'),
 
-    'storage_path' => env('WINK_STORAGE_PATH', 'public/wink/images'),
+    'storage_path' => env('WINK_STORAGE_PATH', 'wink/images'),
 
     /*
     |--------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 namespace Wink\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Throwable;
@@ -69,7 +70,7 @@ class ForgotPasswordController extends Controller
 
         cache()->forget('password.reset.'.$authorId);
 
-        $author->password = \Hash::make($password = Str::random());
+        $author->password = Hash::make($password = Str::random());
 
         $author->save();
 

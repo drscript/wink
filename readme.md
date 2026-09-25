@@ -17,7 +17,7 @@ Dark & Light modes available so everyone is happy 😁
 
 Wink uses a separate database connection and authentication system so that you don't have to modify any of your project code.
 
-Packagist `themsaid/wink` stops at Laravel 10. Install this fork from GitHub:
+Packagist `themsaid/wink` stops at Laravel 10. Install this fork from GitHub. Add a VCS repository to your application's `composer.json`:
 
 ```json
 "repositories": [
@@ -28,13 +28,15 @@ Packagist `themsaid/wink` stops at Laravel 10. Install this fork from GitHub:
 ]
 ```
 
+Then run these commands in the root of your Laravel app:
+
 ```sh
 composer require themsaid/wink:dev-1.x
 php artisan wink:install
 php artisan storage:link
 ```
 
-**Configure the database connection** wink is going to be using in `config/wink.php`. Then run:
+**Configure the database connection** wink is going to be using in `config/wink.php`. That file reads `WINK_DB_CONNECTION` and defaults to a connection named `wink`. Point it at a connection you already have, or add a `wink` connection in `config/database.php`. Then run:
 
 ```sh
 php artisan wink:migrate
@@ -42,7 +44,7 @@ php artisan wink:migrate
 
 Head to `yourproject.test/wink` and use the provided email and password to log in.
 
-Uploaded images use the `public` disk and are stored in `storage/app/public/wink/images`. `storage:link` serves that directory. On Laravel 11 and newer the `local` disk points at `storage/app/private`, so leave `storage_disk` set to `public` unless you intend to use a private or S3 disk.
+Uploaded images use the `public` disk and the `wink/images` path, so files land in `storage/app/public/wink/images`. `storage:link` serves that directory. On Laravel 11 and newer the `local` disk points at `storage/app/private`, so leave `storage_disk` set to `public` unless you intend to use a private or S3 disk.
 
 ## Uploading to S3
 
@@ -83,6 +85,33 @@ php artisan wink:migrate
 php artisan vendor:publish --tag=wink-assets --force
 ```
 
+Leave `config/wink.php` in place if you have already customized it. Publishing the `wink-config` tag overwrites that file.
+
+## Upgrade notes
+
+Coming from older Wink or Laravel 10? This fork requires PHP 8.3+ and Laravel 11, 12, or 13. Require `themsaid/wink:dev-1.x` from this repository. `composer require themsaid/wink` without the VCS repository installs the Packagist release, which stops at Laravel 10.
+
+A previously published `config/wink.php` keeps the old upload defaults (`local` disk and `public/wink/images`) until you change them. Update the defaults in that file:
+
+```php
+'storage_disk' => env('WINK_STORAGE_DISK', 'public'),
+
+'storage_path' => env('WINK_STORAGE_PATH', 'wink/images'),
+```
+
+Or set them in `.env`:
+
+```
+WINK_STORAGE_DISK=public
+WINK_STORAGE_PATH=wink/images
+```
+
+On Laravel 10 those old defaults already stored files in `storage/app/public/wink/images`. That is the same directory the new defaults use, so updating the config is enough.
+
+On Laravel 11 and newer the `local` disk root is `storage/app/private`. If uploads landed in `storage/app/private/public/wink/images`, move that folder to `storage/app/public/wink/images`. Run `php artisan storage:link` if `public/storage` does not already point at `storage/app/public`.
+
+Then run the update commands above. More detail is in the [upgrade guide](UPGRADE.md).
+
 ## Displaying your content
 
 Wink is faceless, it doesn't have any opinions on how you display your content in your frontend. You can use the wink models in your controllers to display the different resources:
@@ -97,7 +126,7 @@ To display posts and pages content, use `$post->content` instead of `$post->body
 ## Credits
 
 - [Mohamed Said](https://github.com/themsaid)
-- [All contributors](https://github.com/themsaid/wink/contributors)
+- [All contributors](https://github.com/drscript/wink/contributors)
 
 Special thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
